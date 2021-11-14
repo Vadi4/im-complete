@@ -5,10 +5,10 @@ module.exports = function(){
 		var buildPath = null;
 
 		if($.mode == 'plugin') {
-			sourcePath = ['source/stylus/index.styl'];
+			sourcePath = ['source/stylus/plugin/index.styl'];
 			buildPath = 'plugin/css';
 		} else {
-			sourcePath = ['source/stylus/common/common.styl','source/stylus/common/critical.styl', 'source/stylus/common/grid.styl'];
+			sourcePath = ['source/stylus/common/common.styl','source/stylus/common/critical.styl', 'source/stylus/common/grid.styl', 'source/stylus/plugin/index.styl'];
 			buildPath = 'build/css';
 		}
 

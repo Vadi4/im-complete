@@ -5,3 +5,18 @@ block title
 	- var page_class = 'p-main';
 
 block content
+	.l-container
+		.row.flex-center
+			.col-6
+				+b('').im-complete.nope-js-autocomplete
+					+e('input')(type="text").input
+					+e('').result-list
+						+e('a')(href='#').result-item Minsk
+						+e('a')(href='#').result-item Mayami
+						+e('a')(href='#').result-item Moscow
+						+e('a')(href='#').result-item Riga
+						+e('a')(href='#').result-item Vilnus
+						+e('a')(href='#').result-item Kiev
+						+e('a')(href='#').result-item Chikago
+
+
