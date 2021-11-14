@@ -1,0 +1,12 @@
+node_modules
+build
+plugin
+bower_components
+PSD
+.DS_Store
+Desktop.ini
+Thumbs.db
+.vscode
+package-lock.json
+.idea
+source/images/symbol/sprite.symbol.html

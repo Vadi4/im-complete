@@ -1,0 +1,87 @@
+$gutter_sm = 8px
+$gutter = 12px
+$gutterN = -12px // stylus bug with minus
+
+.container
+	margin 0 auto
+	max-width 1632px
+	padding 0 20px
+	@media $min_md
+		padding 0 24px
+	&_sm
+		max-width 1364px
+
+.row
+	display flex
+	flex-wrap wrap
+	margin-left -($gutter_sm)
+	margin-right -($gutter_sm)
+	@media (min-width: 1024px)
+		margin-left $gutterN
+		margin-right $gutterN
+
+.justify-content-center
+	justify-content center
+	
+.self-center
+	margin 0 auto
+	
+for i in (1..12)
+	.col-{i}
+		padding 0 $gutter_sm
+		@media (min-width: 1024px)
+			padding 0 $gutter
+	.col-xsm-{i}
+		padding 0 $gutter_sm
+		@media (min-width: 1024px)
+			padding 0 $gutter
+	.col-md-{i}
+		padding 0 $gutter_sm
+		@media (min-width: 1024px)
+			padding 0 $gutter
+	.col-hd-{i}
+		padding 0 $gutter_sm
+		@media (min-width: 1024px)
+			padding 0 $gutter
+	
+.col
+	flex-basis 100%
+	flex-grow 1
+	max-width 100%
+	width 100%
+	
+.col-auto
+	flex 0 0 auto
+	max-width 100%
+	
+.col,
+.col-auto
+	padding 0 $gutter_sm
+	@media (min-width: 1024px)
+		padding 0 $gutter
+	
+
+for num in (1..12)
+	.col-{num}
+		flex 0 0 "calc((100%/12) * %s)" % num
+		max-width "calc((100%/12) * %s)" % num
+	.col-xsm-{num}
+		@media (min-width: 640px)
+			flex 0 0 "calc((100%/12) * %s)" % num
+			max-width "calc((100%/12) * %s)" % num	
+	.col-md-{num}
+		@media (min-width: 1024px)
+			flex 0 0 "calc((100%/12) * %s)" % num
+			max-width "calc((100%/12) * %s)" % num
+	.col-lg-{num}
+		@media (min-width: 1201px)
+			flex 0 0 "calc((100%/12) * %s)" % num
+			max-width "calc((100%/12) * %s)" % num
+	.col-hd-{num}
+		@media (min-width: 1366px)
+			flex 0 0 "calc((100%/12) * %s)" % num
+			max-width "calc((100%/12) * %s)" % num
+	.col-xlg-{num}
+		@media (min-width: 1501px)
+			flex 0 0 "calc((100%/12) * %s)" % num
+			max-width "calc((100%/12) * %s)" % num
