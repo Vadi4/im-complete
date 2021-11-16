@@ -9,14 +9,22 @@ block content
 		.row.flex-center
 			.col-6
 				+b('').im-complete.nope-js-autocomplete
-					+e('input')(type="text").input
-					+e('').result-list
-						+e('a')(href='#').result-item Minsk
-						+e('a')(href='#').result-item Mayami
-						+e('a')(href='#').result-item Moscow
-						+e('a')(href='#').result-item Riga
-						+e('a')(href='#').result-item Vilnus
-						+e('a')(href='#').result-item Kiev
-						+e('a')(href='#').result-item Chikago
+					+e('').input-wrap
+						+e('input')(type="text" data-input="true").input
+					+e('')(data-list-container="true").result-list
+						+e('a')(href='#' data-list-item="true").result-item
+							span(data-item-value="true") Minsk
+						+e('a')(href='#' data-list-item="true").result-item 
+							span(data-item-value="true") Mayami
+						+e('a')(href='#' data-list-item="true").result-item 
+							span(data-item-value="true") Moscow
+						+e('a')(href='#' data-list-item="true").result-item 
+							span(data-item-value="true") Riga
+						+e('a')(href='#' data-list-item="true").result-item 
+							span(data-item-value="true") Vilnus
+						+e('a')(href='#' data-list-item="true").result-item 
+							span(data-item-value="true") Kiev
+						+e('a')(href='#' data-list-item="true").result-item 
+							span(data-item-value="true") Chikago
 
 
