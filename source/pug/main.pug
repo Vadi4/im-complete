@@ -8,9 +8,11 @@ block content
 	.l-container
 		.row.flex-center
 			.col-6
+				+b('span').title-1 Basic autocomplete
 				+b('').im-complete.nope-js-autocomplete
 					+e('').input-wrap
 						+e('input')(type="text" data-input="true").input
+						+e('a')(href='#' data-open="true").btn-open
 					+e('')(data-list-container="true").result-list
 						+e('a')(href='#' data-list-item="true").result-item
 							span(data-item-value="true") Minsk
