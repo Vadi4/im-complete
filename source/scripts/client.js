@@ -12,6 +12,7 @@ ready(() => {
 
 	const search = new imSearch(document.querySelector('.js-autocomplete'), {
 		// searchTimeout: 1000
+		// keyboardEvents: false
 	});
 
 });
