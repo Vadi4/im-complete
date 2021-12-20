@@ -1,6 +1,6 @@
 node_modules
 build
-plugin
+plugins
 bower_components
 PSD
 .DS_Store
