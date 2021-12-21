@@ -15,17 +15,22 @@ class imSearch {
 		this.openState = false;
 		this.value = null;
 		this.keyboardEvents = (options.keyboardEvents == false ) ? false : true;
+		this.ajaxItems = options.ajaxItems || false;
+		if( this.ajaxItems ) {
+			this.responePath = this.el.getAttribute('data-response-path');
+			this.responseMessage = null;
+		}
 
-		console.log( this.keyboardEvents, options.keyboardEvents );
+		this.input = this.el.querySelector('[data-input]');
+		this.listContainer = this.el.querySelector('[data-list-container]');
+		this.listItems = [];		
 
 		this.init();
 	}
 
 	init() {
 
-		this.input = this.el.querySelector('[data-input]');
-		this.listContainer = this.el.querySelector('[data-list-container]');
-		this.listItems = [];
+
 		this.focusItem = null;
 		this.el.querySelectorAll('[data-list-item]').forEach( listItem => {
 			this.listItems.push(listItem);
@@ -33,9 +38,29 @@ class imSearch {
 
 		let searchTimer = null;
 
+		if( this.ajaxItems ) {
+			this.formData = new FormData();
+			this.dataset = this.el.dataset;
+			this.dataset.value = this.value;
+			
+			if(this.dataset){
+				for (const field of Object.keys(this.dataset)) {
+					if (field) {
+						this.formData.append(field, this.dataset[field]);
+					}
+				}
+			}
+
+			this.loadItems();
+			this.ajaxItems = false; // false after set items
+
+		}
+
+
 		this.input.addEventListener('input', (e) => {
 
 			clearTimeout(searchTimer);
+
 
 			searchTimer = setTimeout( () => {
 
@@ -56,8 +81,7 @@ class imSearch {
 			const target = e.target;
 			if( !this.el.contains(target) ) {
 				this.close();
-			}
-			if( target.closest('[data-list-item=true]') ) {
+			} else if ( this.el.contains(target) && target.closest('[data-list-item=true]') ) {
 				this.select(target.closest('[data-list-item=true]'));
 			}
 		});
@@ -139,7 +163,60 @@ class imSearch {
 
 	destroy() {
 		// whenever need to develope
-	}	
+	}
+
+	loadItems() {
+
+		// FOR LOCAL DEBUG
+
+		fetch(
+			this.responePath,
+			{
+				method: 'GET'
+			}
+
+		// fetch(
+		// 	this.responePath,
+		// 	{
+		// 		method: 'POST',
+		// 		body: this.formData,
+		// 		headers: headers
+		// 	}
+		).then(
+			response => response.json()
+		).then( 
+			response => {
+				if(response.result) {
+					
+					if(response.message){
+
+						console.log( response );
+						this.responseMessage = response.message;
+
+						this._generateItems();
+					}
+
+				} else {
+					console.log(response.message);
+				}
+			}
+		).catch((error) => {
+			return console.error(error);
+		});				
+	}
+
+	_generateItems( ) {
+		if( this.responseMessage != null ) {
+			// console.log( this.responseMessage );
+			let resultItemsHTML = ''; 
+			this.responseMessage.forEach( (resultItem, index) => {
+				resultItemsHTML += `<a class="b-im-complete__result-item" data-list-item="true">
+					<span data-item-value="true" id="${resultItem.id}">${resultItem.value}</span></a>`;
+			});
+			this.listContainer.insertAdjacentHTML('afterbegin', resultItemsHTML);
+			this.init();
+		}
+	}
 
 	search() {
 

@@ -1,3 +1,7 @@
+.section
+	&:not(:last-child)
+		margin-bottom 60px
+
 
 .b-im-complete
 	&__input
@@ -10,8 +14,9 @@
 		border-top 0
 		border-radius 0 0 4px 4px
 		opacity 0
-		visibility visible
+		visibility hidden
 		transition .25s opacity, .25s visibility
+		background-color #fff
 	&__result-item
 		padding 12px 24px
 		text-decoration none
@@ -43,6 +48,7 @@
 			border-width 12px 7.5px 0 7.5px
 			border-color rgba(0, 0, 0, .5) transparent transparent transparent
 	&.opened
+		z-index 2
 		.b-im-complete
 			&__result-list
 				opacity 1

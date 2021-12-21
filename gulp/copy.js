@@ -18,6 +18,11 @@ module.exports = function(){
 		.pipe($.gulp.dest('build/img'));
 
 	$.gulp.src([
+		'source/*.json',
+	])
+		.pipe($.gulp.dest('build'));		
+
+	$.gulp.src([
 		'source/fonts/*.woff',
 		'source/fonts/*.woff2'
 	])
