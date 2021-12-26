@@ -1,6 +1,6 @@
 .section
 	&:not(:last-child)
-		margin-bottom 60px
+		margin-bottom 120px
 
 
 .b-im-complete
@@ -9,6 +9,7 @@
 		border 2px solid rgba(0, 0, 0, .5)
 		padding 0 24px
 		font-size 24px
+		height 50px
 	&__result-list
 		border 2px solid rgba(0, 0, 0, .5)
 		border-top 0
@@ -17,6 +18,8 @@
 		visibility hidden
 		transition .25s opacity, .25s visibility
 		background-color #fff
+		max-height 300px
+		overflow auto
 	&__result-item
 		padding 12px 24px
 		text-decoration none

@@ -15,6 +15,8 @@ ready(() => {
 		// ajaxItems: false
 	});
 
+	// search.destroy();
+
 	const ajaxSearch = new imSearch(document.querySelector('.js-autocomplete-ajax'), {
 		ajaxItems: true
 	});

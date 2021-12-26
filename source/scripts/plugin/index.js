@@ -3,27 +3,30 @@
  * OPTIONS WITH DEFAULT VALUES
  * @searchTimeout: 750
  * @keyboardEvents: true
- *  
+ * @ajaxItems: false
+ * // PUBLIC METHODS
+ * @.destroy()
  * */
 
-export {imSearch};
+export { imSearch };
 
 class imSearch {
 	constructor(element, options) {
-		this.el = element;
+		this.select = element;
 		this.searchTimeout = options.searchTimeout || 750;
 		this.openState = false;
 		this.value = null;
-		this.keyboardEvents = (options.keyboardEvents == false ) ? false : true;
+		this.keyboardEvents = (options.keyboardEvents == false) ? false : true;
 		this.ajaxItems = options.ajaxItems || false;
-		if( this.ajaxItems ) {
-			this.responePath = this.el.getAttribute('data-response-path');
+		if (this.ajaxItems) {
+			this.responePath = this.select.getAttribute('data-response-path');
 			this.responseMessage = null;
 		}
 
-		this.input = this.el.querySelector('[data-input]');
-		this.listContainer = this.el.querySelector('[data-list-container]');
-		this.listItems = [];		
+		this.input = this.select.querySelector('[data-input]');
+		this.listContainer = this.select.querySelector('[data-list-container]');
+		this.listItems = [];
+		this.btnsOpen = this.select.querySelectorAll('[data-open=true]');
 
 		this.init();
 	}
@@ -32,18 +35,18 @@ class imSearch {
 
 
 		this.focusItem = null;
-		this.el.querySelectorAll('[data-list-item]').forEach( listItem => {
+		this.select.querySelectorAll('[data-list-item]').forEach(listItem => {
 			this.listItems.push(listItem);
 		});
 
 		let searchTimer = null;
 
-		if( this.ajaxItems ) {
+		if (this.ajaxItems) {
 			this.formData = new FormData();
-			this.dataset = this.el.dataset;
+			this.dataset = this.select.dataset;
 			this.dataset.value = this.value;
-			
-			if(this.dataset){
+
+			if (this.dataset) {
 				for (const field of Object.keys(this.dataset)) {
 					if (field) {
 						this.formData.append(field, this.dataset[field]);
@@ -56,62 +59,75 @@ class imSearch {
 
 		}
 
+		// ADDED EVENTS LISTENERS
 
-		this.input.addEventListener('input', (e) => {
-
+		this._inputListenerOnInput = (e) => {
 			clearTimeout(searchTimer);
 
+			if(!this.openState) this.open();
 
-			searchTimer = setTimeout( () => {
+			searchTimer = setTimeout(() => {
 
 				this.value = this.input.value;
 				this.search();
 
-			}, this.searchTimeout);
+			}, this.searchTimeout);			
 
-		});
+		}
 
-		// ADDED EVENTS LISTENERS
-
-		this.input.addEventListener('focus', e => {
+		this._inputListenerOnFocus = (e) => {
 			this.open();
+		};
+
+		this._inputListenerOnBlur = (e) => {
+			this.close();
+		}
+
+		this._listItemListenerOnClick = (e) => {
+			e.preventDefault();
+			this.selectItem(e.target);
+		}
+
+		this._btnsOpenListenerOnClick = (e) => {
+			e.preventDefault();
+			if (this.openState) {
+				this.close();
+			} else {
+				this.open();
+			}
+		}
+
+		this.input.addEventListener('input', this._inputListenerOnInput);
+
+		this.input.addEventListener('focus', this._inputListenerOnFocus);
+
+		this.select.addEventListener('blur', this._inputListenerOnBlur);
+
+		this.listItems.forEach( listItem => {
+			listItem.addEventListener('click', this._listItemListenerOnClick);
+		});	
+
+		this.btnsOpen.forEach(btn => {
+			btn.addEventListener('click', this._btnsOpenListenerOnClick);
 		});
 
 		document.addEventListener('click', e => {
 			const target = e.target;
-			if( !this.el.contains(target) ) {
+			if (!this.select.contains(target)) {
 				this.close();
-			} else if ( this.el.contains(target) && target.closest('[data-list-item=true]') ) {
-				this.select(target.closest('[data-list-item=true]'));
 			}
-		});
-
-		const $btnsOpen = this.el.querySelectorAll('[data-open=true]');
-		if( $btnsOpen.length ) {
-			$btnsOpen.forEach( btn => {
-				btn.addEventListener('click', e => {
-
-					if( this.openState ) {
-						this.close();
-					} else {
-						this.open();
-					}
-
-				});
-			});
-		};
+		});		
 
 		// KEYBOARD LISTENERS
 
-
 		document.addEventListener('keydown', (e) => {
-			if( !this.openState || !this.keyboardEvents ) return;
+			if (!this.openState || !this.keyboardEvents) return;
 
 			if (e.defaultPrevented) {
 				return; // Do nothing if event already handled
 			}
 
-			switch(e.key) {
+			switch (e.key) {
 				case "ArrowDown":
 					e.preventDefault();
 					this.focusNext();
@@ -128,28 +144,39 @@ class imSearch {
 
 		});
 
-
-
 		// END KEYBOARD LISTENERS
 
-		
+
 
 		// END EVENT LISTENERS
 	}
 
+	destroy() {
+		// whenever need to develope
+		this.input.removeEventListener('input', this._inputListenerOnInput);
+		this.input.removeEventListener('focus', this._inputListenerOnFocus);
+		this.select.removeEventListener('blur', this._inputListenerOnBlur);
+		this.listItems.forEach(listItem => {
+			listItem.removeEventListener('click', this._listItemListenerOnClick );
+		});
+		this.btnsOpen.forEach(btn => {
+			btn.removeEventListener('click', this._btnsOpenListenerOnClick);
+		});
+	}	
+
 	focusNext() {
 		this.focusItem.classList.remove('focus');
-		if( this.focusItem.nextElementSibling ) {
+		if (this.focusItem.nextElementSibling) {
 			this.focusItem = this.focusItem.nextElementSibling;
 		} else {
-			this.focusItem = this.listItems[0];	
+			this.focusItem = this.listItems[0];
 		}
 		this.focusItem.classList.add('focus');
 	}
 
 	focusPrev() {
 		this.focusItem.classList.remove('focus');
-		if( this.focusItem.previousElementSibling ) {
+		if (this.focusItem.previousElementSibling) {
 			this.focusItem = this.focusItem.previousElementSibling;
 		} else {
 			this.focusItem = this.listItems[this.listItems.length - 1];
@@ -161,36 +188,32 @@ class imSearch {
 		this.focusItem.click();
 	}
 
-	destroy() {
-		// whenever need to develope
-	}
 
 	loadItems() {
 
 		// FOR LOCAL DEBUG
 
 		fetch(
-			this.responePath,
-			{
+			this.responePath, {
 				method: 'GET'
 			}
 
-		// fetch(
-		// 	this.responePath,
-		// 	{
-		// 		method: 'POST',
-		// 		body: this.formData,
-		// 		headers: headers
-		// 	}
+			// fetch(
+			// 	this.responePath,
+			// 	{
+			// 		method: 'POST',
+			// 		body: this.formData,
+			// 		headers: headers
+			// 	}
 		).then(
 			response => response.json()
-		).then( 
+		).then(
 			response => {
-				if(response.result) {
-					
-					if(response.message){
+				if (response.result) {
 
-						console.log( response );
+					if (response.message) {
+
+						console.log(response);
 						this.responseMessage = response.message;
 
 						this._generateItems();
@@ -202,14 +225,14 @@ class imSearch {
 			}
 		).catch((error) => {
 			return console.error(error);
-		});				
+		});
 	}
 
-	_generateItems( ) {
-		if( this.responseMessage != null ) {
+	_generateItems() {
+		if (this.responseMessage != null) {
 			// console.log( this.responseMessage );
-			let resultItemsHTML = ''; 
-			this.responseMessage.forEach( (resultItem, index) => {
+			let resultItemsHTML = '';
+			this.responseMessage.forEach((resultItem, index) => {
 				resultItemsHTML += `<a class="b-im-complete__result-item" data-list-item="true">
 					<span data-item-value="true" id="${resultItem.id}">${resultItem.value}</span></a>`;
 			});
@@ -220,23 +243,25 @@ class imSearch {
 
 	search() {
 
-		this.listItems.forEach( listItem => {
+		this.listItems.forEach(listItem => {
 
 			let itemValue = listItem.querySelector('[data-item-value=true]').innerText.toLowerCase();
 
-			if( itemValue.includes(this.value.toLowerCase()) ) {
+			if (itemValue.includes(this.value.toLowerCase())) {
 				listItem.style.display = '';
 			} else {
 				listItem.style.display = 'none';
 			}
 		});
 
+		this.focus();
+
 	}
 
 	open() {
 
-		if( !this.openState ) {
-			this.el.classList.add('opened');
+		if (!this.openState) {
+			this.select.classList.add('opened');
 			this.openState = true;
 
 			this.focus();
@@ -246,31 +271,31 @@ class imSearch {
 
 	close() {
 
-		if( this.openState ) {
-			this.el.classList.remove('opened');
+		if (this.openState) {
+			this.select.classList.remove('opened');
 			this.openState = false;
 		}
 
 	}
 
-	select(item) {
+	selectItem(item) {
 		this.value = item.querySelector('[data-item-value]').innerText;
 		this.input.value = this.value;
 		this.close();
 	}
 
-	focus(item) {
-		if( typeof item == "undefined" && !item ) {
-			this.listItems.forEach( (listItem, index) => {
-				if( index == 0 ) {
-					listItem.classList.add('focus');
-					this.focusItem = listItem;
-					return;
-				}
-				listItem.classList.remove('focus');
-			});
+	focus() {
+
+		if( this.select.querySelector('.focus') ) this.select.querySelector('.focus').classList.remove('focus');
+
+		for( let listItem of this.listItems) {
+			if( listItem.style.display != 'none' ){
+				listItem.classList.add('focus');
+				this.focusItem = listItem;
+				return;
+			}
 		}
+
 	}
 
 }
-
