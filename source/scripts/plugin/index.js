@@ -5,7 +5,7 @@
  * @keyboardEvents: true
  * @ajaxItems: false
  * // PUBLIC METHODS
- * @.destroy()
+ * @destroy()
  * */
 
 export { imSearch };
@@ -33,11 +33,12 @@ class imSearch {
 
 	init() {
 
-
 		this.focusItem = null;
+	
 		this.select.querySelectorAll('[data-list-item]').forEach(listItem => {
 			this.listItems.push(listItem);
 		});
+
 
 		let searchTimer = null;
 
@@ -54,8 +55,10 @@ class imSearch {
 				}
 			}
 
-			this.loadItems();
-			this.ajaxItems = false; // false after set items
+
+
+			// this.loadItems();
+			// this.ajaxItems = false; // false after set items
 
 		}
 
@@ -76,6 +79,10 @@ class imSearch {
 		}
 
 		this._inputListenerOnFocus = (e) => {
+			if( this.ajaxItems ) {
+				this.loadItems();
+				this.ajaxItems = false; // false after set items			
+			}
 			this.open();
 		};
 
@@ -171,6 +178,7 @@ class imSearch {
 		} else {
 			this.focusItem = this.listItems[0];
 		}
+
 		this.focusItem.classList.add('focus');
 	}
 
@@ -213,10 +221,10 @@ class imSearch {
 
 					if (response.message) {
 
-						console.log(response);
 						this.responseMessage = response.message;
 
 						this._generateItems();
+						this.focus();
 					}
 
 				} else {
@@ -237,11 +245,14 @@ class imSearch {
 					<span data-item-value="true" id="${resultItem.id}">${resultItem.value}</span></a>`;
 			});
 			this.listContainer.insertAdjacentHTML('afterbegin', resultItemsHTML);
+
 			this.init();
 		}
 	}
 
 	search() {
+
+		let setFocusItem = false;
 
 		this.listItems.forEach(listItem => {
 
@@ -249,6 +260,12 @@ class imSearch {
 
 			if (itemValue.includes(this.value.toLowerCase())) {
 				listItem.style.display = '';
+
+				if( !setFocusItem ) {
+					this.focus();
+					setFocusItem = true;
+				}
+
 			} else {
 				listItem.style.display = 'none';
 			}
@@ -287,14 +304,23 @@ class imSearch {
 	focus() {
 
 		if( this.select.querySelector('.focus') ) this.select.querySelector('.focus').classList.remove('focus');
+		if( this.select.querySelector('[data-list-item]') ) {
 
-		for( let listItem of this.listItems) {
-			if( listItem.style.display != 'none' ){
-				listItem.classList.add('focus');
-				this.focusItem = listItem;
-				return;
-			}
-		}
+			let findFocus = false;
+
+			this.select.querySelectorAll('[data-list-item]').forEach( item => {
+
+				if( item.style.display != 'none' && !findFocus ) {
+					item.classList.add('focus');
+					findFocus = true; 
+				 }
+
+			});
+
+			if( findFocus ) this.focusItem = this.select.querySelector('.focus');
+
+		};
+
 
 	}
 
