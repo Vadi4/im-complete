@@ -4,6 +4,7 @@
  * @searchTimeout: 750
  * @keyboardEvents: true
  * @ajaxItems: false
+ * @dynamicAjax: false
  * // PUBLIC METHODS
  * @destroy()
  * */
@@ -18,7 +19,8 @@ class imSearch {
 		this.value = null;
 		this.keyboardEvents = (options.keyboardEvents == false) ? false : true;
 		this.ajaxItems = options.ajaxItems || false;
-		if (this.ajaxItems) {
+		this.dynamicAjax = options.dynamicAjax || false;
+		if (this.ajaxItems || this.dynamicAjax) {
 			this.responePath = this.select.getAttribute('data-response-path');
 			this.responseMessage = null;
 		}
@@ -43,24 +45,15 @@ class imSearch {
 		let searchTimer = null;
 
 		if (this.ajaxItems) {
-			this.formData = new FormData();
-			this.dataset = this.select.dataset;
-			this.dataset.value = this.value;
 
-			if (this.dataset) {
-				for (const field of Object.keys(this.dataset)) {
-					if (field) {
-						this.formData.append(field, this.dataset[field]);
-					}
-				}
-			}
-
+			this._fetch();
 
 
 			// this.loadItems();
 			// this.ajaxItems = false; // false after set items
 
 		}
+
 
 		// ADDED EVENTS LISTENERS
 
@@ -72,7 +65,13 @@ class imSearch {
 			searchTimer = setTimeout(() => {
 
 				this.value = this.input.value;
-				this.search();
+				if( this.dynamicAjax ) {
+					this._fetch();
+					this.loadItems();
+				} else {
+					this.search();
+				}
+
 
 			}, this.searchTimeout);			
 
@@ -158,6 +157,25 @@ class imSearch {
 		// END EVENT LISTENERS
 	}
 
+	// FETCH DATA
+
+	_fetch() {
+
+		this.formData = new FormData();
+		this.dataset = this.select.dataset;
+		this.dataset.value = this.value;
+
+		if (this.dataset) {
+			for (const field of Object.keys(this.dataset)) {
+				if (field) {
+					this.formData.append(field, this.dataset[field]);
+				}
+			}
+		}
+	}
+
+	// END FETCH DATA	
+
 	destroy() {
 		// whenever need to develope
 		this.input.removeEventListener('input', this._inputListenerOnInput);
@@ -240,6 +258,7 @@ class imSearch {
 		if (this.responseMessage != null) {
 			// console.log( this.responseMessage );
 			let resultItemsHTML = '';
+			this.listContainer.innerHTML = '';
 			this.responseMessage.forEach((resultItem, index) => {
 				resultItemsHTML += `<a class="b-im-complete__result-item" data-list-item="true">
 					<span data-item-value="true" id="${resultItem.id}">${resultItem.value}</span></a>`;

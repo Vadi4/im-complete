@@ -32,7 +32,14 @@ block content
 							+e('a')(href='#' data-list-item="true").result-item 
 								span(data-item-value="true") Lisp
 							+e('a')(href='#' data-list-item="true").result-item 
-								span(data-item-value="true") PHP																
+								span(data-item-value="true") PHP
+				section.section
+					+b('span').title-1 Dynamic fetch autocomplete
+					+b('')(data-response-path="/response.json").im-complete.nope-js-autocomplete-dynamic-ajax
+						+e('').input-wrap
+							+e('input')(type="text" data-input="true").input
+							+e('a')(href='#' data-open="true").btn-open
+						+e('')(data-list-container="true").result-list
 				section.section
 					+b('span').title-1 Ajax autocomplete
 					+b('')(data-response-path="/response.json").im-complete.nope-js-autocomplete-ajax

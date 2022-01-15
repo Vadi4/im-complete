@@ -13,9 +13,14 @@ ready(() => {
 		// searchTimeout: 1000
 		// keyboardEvents: false
 		// ajaxItems: false
+		// dynamicAjax: false
 	});
 
 	// search.destroy();
+
+	const dynamicAjaxSearch = new imSearch(document.querySelector('.js-autocomplete-dynamic-ajax'), {
+		dynamicAjax: true
+	});	
 
 	const ajaxSearch = new imSearch(document.querySelector('.js-autocomplete-ajax'), {
 		ajaxItems: true
