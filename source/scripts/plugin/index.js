@@ -60,7 +60,7 @@ class imSearch {
 		this._inputListenerOnInput = (e) => {
 			clearTimeout(searchTimer);
 
-			if(!this.openState) this.open();
+			this.open();
 
 			searchTimer = setTimeout(() => {
 
@@ -82,6 +82,7 @@ class imSearch {
 				this.loadItems();
 				this.ajaxItems = false; // false after set items			
 			}
+
 			this.open();
 		};
 
@@ -265,6 +266,7 @@ class imSearch {
 			});
 			this.listContainer.insertAdjacentHTML('afterbegin', resultItemsHTML);
 
+			this.destroy();
 			this.init();
 		}
 	}
@@ -339,8 +341,5 @@ class imSearch {
 			if( findFocus ) this.focusItem = this.select.querySelector('.focus');
 
 		};
-
-
 	}
-
 }

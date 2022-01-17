@@ -6,7 +6,7 @@ module.exports = function(){
 
 		if($.mode == 'plugin') {
 			sourcePath = ['source/stylus/plugin/index.styl'];
-			buildPath = 'plugin/css';
+			buildPath = 'plugin/dist/css';
 		} else {
 			sourcePath = ['source/stylus/common/common.styl','source/stylus/common/critical.styl', 'source/stylus/common/grid.styl', 'source/stylus/plugin/index.styl'];
 			buildPath = 'build/css';
