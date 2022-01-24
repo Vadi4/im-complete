@@ -14,6 +14,9 @@ ready(() => {
 		// keyboardEvents: false
 		// ajaxItems: false
 		// dynamicAjax: false
+		onInit(item) {
+			console.log('event init');
+		}
 	});
 
 	// search.destroy();

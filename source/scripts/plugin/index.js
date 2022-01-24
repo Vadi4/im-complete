@@ -7,12 +7,15 @@
  * @dynamicAjax: false
  * // PUBLIC METHODS
  * @destroy()
+ * // CALLBACK FUNCTIONS
+ * @onInit()
  * */
 
 export { imSearch };
 
 class imSearch {
 	constructor(element, options) {
+		this.options = options;
 		this.select = element;
 		this.searchTimeout = options.searchTimeout || 750;
 		this.openState = false;
@@ -155,8 +158,10 @@ class imSearch {
 
 		// END EVENT LISTENERS
 
-		
-		
+		if( typeof this.options.onInit === 'function'){
+			this.options.onInit();
+		}
+
 	}
 
 	// FETCH DATA
