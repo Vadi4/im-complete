@@ -9,6 +9,7 @@
  * @destroy()
  * // CALLBACK FUNCTIONS
  * @onInit()
+ * @onSelect()
  * */
 
 export { imSearch };
@@ -326,6 +327,10 @@ class imSearch {
 		this.value = item.querySelector('[data-item-value]').innerText;
 		this.input.value = this.value;
 		this.close();
+
+		if( typeof this.options.onSelect === 'function'){
+			this.options.onSelect();
+		}		
 	}
 
 	focus() {

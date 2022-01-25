@@ -14,8 +14,11 @@ ready(() => {
 		// keyboardEvents: false
 		// ajaxItems: false
 		// dynamicAjax: false
-		onInit(item) {
+		onInit() {
 			console.log('event init');
+		},
+		onSelect() {
+			console.log('event select');
 		}
 	});
 
